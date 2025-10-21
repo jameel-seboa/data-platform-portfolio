@@ -21,12 +21,20 @@ jobs:
         run: |
           pip install databricks
 
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v2
+
       - name: Authenticate with Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           databricks auth login --host "$DATABRICKS_HOST" --token "$DATABRICKS_TOKEN" --profile "ci-profile"
+
+      - name: Sanity check
+        run: |
+          databricks --version
+          databricks auth profiles
 
       - name: Upload code to DBFS
         run: |
