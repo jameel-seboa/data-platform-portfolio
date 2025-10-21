@@ -17,9 +17,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Databricks CLI
+      - name: Install Databricks
         run: |
-          pip install databricks-cli
+          pip install databricks
 
       - name: Authenticate with Databricks
         env:
