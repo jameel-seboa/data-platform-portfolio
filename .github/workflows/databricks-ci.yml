@@ -26,9 +26,12 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          databricks configure --host "$DATABRICKS_HOST" --token "$DATABRICKS_TOKEN" --quiet
+          databricks auth login --host "$DATABRICKS_HOST" --token "$DATABRICKS_TOKEN" --profile "ci-profile"
 
-      - name: Upload scripts to DBFS
+      - name: Upload code to DBFS
         run: |
-          databricks fs mkdirs dbfs:/FileStore/code/portfolio/
-          databricks fs cp --overwrite --recursive databricks/src/ dbfs:/FileStore/code/portfolio/src/
+          databricks fs mkdirs dbfs:/FileStore/code/portfolio --profile "ci-profile"
+          databricks fs cp --overwrite --recursive databricks/src/ dbfs:/FileStore/code/portfolio/src/ --profile "ci-profile"
+      - name: Trigger Databricks Job
+        run: |
+          databricks jobs run-now --job-id 12345 --profile "ci-profile"
